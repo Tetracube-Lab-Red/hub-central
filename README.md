@@ -1,10 +1,31 @@
-# hub-central
+# Hub Central
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+This project provides a critical service for the TetraCube platform, responsible for issuing and managing access tokens 
+that allow secure interactions within the ecosystem. The service ensures that only authorized users and applications 
+can access various components of the platform.
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
+In addition to handling token generation and verification, the service maintains essential knowledge about the house 
+and its associated connected applications, ensuring that access permissions are appropriately aligned with the house's 
+current setup and connected devices. This allows for seamless and secure operations across the platform,
+from controlling smart home devices to interacting with telemetry data.
 
-## Running the application in dev mode
+This service is a cornerstone of the TetraCube ecosystem, enabling secure and streamlined access to its various modules and services.
+
+## Tech stack
+
+This project uses Quarkus (the Supersonic Subatomic Java Framework) and Java 21 as programming language.
+Combining the two technologies guarantee to the service a good performance on homelabs and low-powered hardware,
+instead if you decide to deploy in the cloud, the combination guarantee the low infrastructure pricing.
+
+The Hub central uses PostgreSQL as persistence database.
+
+## Running the application 
+
+Requirements:
+* Fully functional PostreSQL database with user and database created
+* `.env` file or environment variable set as declared in the template file `.env.template`
+
+### Development mode
 
 You can run your application in dev mode that enables live coding using:
 
@@ -52,13 +73,3 @@ Or, if you don't have GraalVM installed, you can run the native executable build
 You can then execute your native executable with: `./target/hub-central-1.0.0-SNAPSHOT-runner`
 
 If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
-
-## Related Guides
-
-- REST ([guide](https://quarkus.io/guides/rest)): A Jakarta REST implementation utilizing build time processing and Vert.x. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it.
-- SmallRye OpenAPI ([guide](https://quarkus.io/guides/openapi-swaggerui)): Document your REST APIs with OpenAPI - comes with Swagger UI
-- REST Jackson ([guide](https://quarkus.io/guides/rest#json-serialisation)): Jackson serialization support for Quarkus REST. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it
-- Hibernate ORM with Panache ([guide](https://quarkus.io/guides/hibernate-orm-panache)): Simplify your persistence code for Hibernate ORM via the active record or the repository pattern
-- SmallRye JWT ([guide](https://quarkus.io/guides/security-jwt)): Secure your applications with JSON Web Token
-- SmallRye JWT Build ([guide](https://quarkus.io/guides/security-jwt-build)): Create JSON Web Token with SmallRye JWT Build API
-- JDBC Driver - PostgreSQL ([guide](https://quarkus.io/guides/datasource)): Connect to the PostgreSQL database via JDBC
