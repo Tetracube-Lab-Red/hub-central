@@ -19,6 +19,7 @@ import red.tetracube.hubcentral.api.payloads.HubPayload;
 import red.tetracube.hubcentral.database.entities.HubEntity;
 import red.tetracube.hubcentral.database.repositories.HubRepository;
 import red.tetracube.hubcentral.database.repositories.RoomRepository;
+import red.tetracube.hubcentral.domain.model.HubData;
 import red.tetracube.hubcentral.exceptions.HubCentralException;
 import red.tetracube.hubcentral.services.dto.Result;
 
@@ -39,7 +40,7 @@ public class HubServices {
 
     private final static Logger LOG = LoggerFactory.getLogger(HubServices.class);
 
-    public Result<String> generateTokenForHub(String name, String accessCode) {
+    public Result<HubData> generateTokenForHub(String name, String accessCode) {
         Optional<HubEntity> optionalHub;
         try {
             optionalHub = hubRepository.getHubByName(name);
@@ -75,7 +76,13 @@ public class HubServices {
                 .expiresAt(tokenExpirationTS)
                 .sign();
         LOG.info("Hub access granted, created the JWT");
-        return Result.success(token);
+        return Result.success(
+                new HubData(
+                        theHub.getSlug(),
+                        theHub.getName(),
+                        token
+                )
+        );
     }
 
     @Transactional
