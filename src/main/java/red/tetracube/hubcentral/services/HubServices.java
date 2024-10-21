@@ -19,7 +19,10 @@ import red.tetracube.hubcentral.api.payloads.HubPayload;
 import red.tetracube.hubcentral.database.entities.HubEntity;
 import red.tetracube.hubcentral.database.repositories.HubRepository;
 import red.tetracube.hubcentral.database.repositories.RoomRepository;
-import red.tetracube.hubcentral.domain.model.HubData;
+import red.tetracube.hubcentral.domain.model.HubBase;
+import red.tetracube.hubcentral.domain.model.HubDetails;
+import red.tetracube.hubcentral.domain.model.HubLogin;
+import red.tetracube.hubcentral.domain.model.Room;
 import red.tetracube.hubcentral.exceptions.HubCentralException;
 import red.tetracube.hubcentral.services.dto.Result;
 
@@ -40,7 +43,7 @@ public class HubServices {
 
     private final static Logger LOG = LoggerFactory.getLogger(HubServices.class);
 
-    public Result<HubData> generateTokenForHub(String name, String accessCode) {
+    public Result<HubLogin> generateTokenForHub(String name, String accessCode) {
         Optional<HubEntity> optionalHub;
         try {
             optionalHub = hubRepository.getHubByName(name);
@@ -77,7 +80,7 @@ public class HubServices {
                 .sign();
         LOG.info("Hub access granted, created the JWT");
         return Result.success(
-                new HubData(
+                new HubLogin(
                         theHub.getSlug(),
                         theHub.getName(),
                         token
@@ -86,7 +89,7 @@ public class HubServices {
     }
 
     @Transactional
-    public Result<HubPayload.Reply> getHubBySlug(String slug) {
+    public Result<HubDetails> getHubBySlug(String slug) {
         Optional<HubEntity> optionalHub;
         try {
             optionalHub = hubRepository.getHubBySlug(slug);
@@ -102,11 +105,11 @@ public class HubServices {
 
         var hub = optionalHub.get();
 
-        var hubReply = new HubPayload.Reply(
+        var hubReply = new HubDetails(
                 hub.getSlug(),
                 hub.getName(),
                 hub.getRooms().stream()
-                        .map(r -> new HubPayload.RoomPayload(r.getSlug(), r.getName()))
+                        .map(r -> new Room(r.getSlug(), r.getName()))
                         .toList()
         );
 
@@ -114,7 +117,7 @@ public class HubServices {
     }
 
     @Transactional
-    public Result<HubEntity> create(String name, String password) {
+    public Result<HubBase> create(String name, String password) {
         if (hubRepository.hubExists()) {
             return Result.failed(
                     new HubCentralException.EntityExistsException("There is another hub configured")
@@ -127,7 +130,12 @@ public class HubServices {
         hub.setSlug(name.trim().replaceAll(" ", "_").toLowerCase());
         hub.setAccessCode(BcryptUtil.bcryptHash(password));
         var savedHub = hubRepository.save(hub);
-        return Result.success(savedHub);
+        return Result.success(
+                new HubBase(
+                        hub.getSlug(),
+                        hub.getName()
+                )
+        );
     }
 
 }

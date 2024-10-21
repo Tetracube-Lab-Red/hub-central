@@ -14,6 +14,8 @@ import io.smallrye.common.annotation.RunOnVirtualThread;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.MediaType;
 import red.tetracube.hubcentral.api.payloads.HubPayload;
+import red.tetracube.hubcentral.domain.model.HubBase;
+import red.tetracube.hubcentral.domain.model.HubDetails;
 import red.tetracube.hubcentral.exceptions.HubCentralException;
 import red.tetracube.hubcentral.services.HubServices;
 
@@ -35,15 +37,10 @@ public class HubAPI {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RunOnVirtualThread
-    public HubPayload.Reply createHub(@Valid @RequestBody HubPayload.CreateRequest request) {
+    public HubBase createHub(@Valid @RequestBody HubPayload.CreateRequest request) {
         var result = hubServices.create(request.name(), request.password());
         if (result.isSuccess()) {
-            var hubEntity = result.getContent();
-            return new HubPayload.Reply(
-                    hubEntity.getSlug(),
-                    hubEntity.getName(),
-                    Collections.emptyList()
-            );
+            return result.getContent();
         }
         var exception = result.getException();
         if (exception instanceof HubCentralException.EntityExistsException) {
@@ -58,7 +55,7 @@ public class HubAPI {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @RunOnVirtualThread
-    public HubPayload.Reply getInfo() {
+    public HubDetails getInfo() {
         var slug = (String) jwt.claim("hub_slug").orElseThrow(() -> new UnauthorizedException("User has not a valid token"));
         var result = hubServices.getHubBySlug(slug);
         if (result.isSuccess()) {
