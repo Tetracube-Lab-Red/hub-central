@@ -1,4 +1,4 @@
-package red.tetracube.hubcentral.services;
+package red.tetracube.hubcentral.hub;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -15,13 +15,13 @@ import io.smallrye.jwt.build.Jwt;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import red.tetracube.hubcentral.api.payloads.HubPayload;
+import red.tetracube.hubcentral.auth.payloads.LoginPayload;
 import red.tetracube.hubcentral.database.entities.HubEntity;
 import red.tetracube.hubcentral.database.repositories.HubRepository;
 import red.tetracube.hubcentral.database.repositories.RoomRepository;
-import red.tetracube.hubcentral.domain.model.HubData;
 import red.tetracube.hubcentral.exceptions.HubCentralException;
-import red.tetracube.hubcentral.services.dto.Result;
+import red.tetracube.hubcentral.domain.Result;
+import red.tetracube.hubcentral.hub.payloads.HubPayload;
 
 @RequestScoped
 public class HubServices {
@@ -40,7 +40,7 @@ public class HubServices {
 
     private final static Logger LOG = LoggerFactory.getLogger(HubServices.class);
 
-    public Result<HubData> generateTokenForHub(String name, String accessCode) {
+    public Result<LoginPayload.Response> generateTokenForHub(String name, String accessCode) {
         Optional<HubEntity> optionalHub;
         try {
             optionalHub = hubRepository.getHubByName(name);
@@ -61,7 +61,8 @@ public class HubServices {
         if (!BcryptUtil.matches(accessCode, theHub.getAccessCode())) {
             LOG.warn("The access code does not match");
             return Result.failed(
-                    new HubCentralException.UnauthorizedException("Access code is invalid"));
+                    new HubCentralException.UnauthorizedException("Access code is invalid")
+            );
         }
 
         var tokenIssueTS = Instant.now();
@@ -77,7 +78,7 @@ public class HubServices {
                 .sign();
         LOG.info("Hub access granted, created the JWT");
         return Result.success(
-                new HubData(
+                new LoginPayload.Response(
                         theHub.getSlug(),
                         theHub.getName(),
                         token
@@ -86,35 +87,7 @@ public class HubServices {
     }
 
     @Transactional
-    public Result<HubPayload.Reply> getHubBySlug(String slug) {
-        Optional<HubEntity> optionalHub;
-        try {
-            optionalHub = hubRepository.getHubBySlug(slug);
-        } catch (Exception ex) {
-            LOG.error("Error on repository query:", ex);
-            return Result.failed(
-                    new HubCentralException.RepositoryException(ex));
-        }
-        if (optionalHub.isEmpty()) {
-            return Result.failed(
-                    new HubCentralException.EntityNotFoundException("Cannot find any Hub with given name"));
-        }
-
-        var hub = optionalHub.get();
-
-        var hubReply = new HubPayload.Reply(
-                hub.getSlug(),
-                hub.getName(),
-                hub.getRooms().stream()
-                        .map(r -> new HubPayload.RoomPayload(r.getSlug(), r.getName()))
-                        .toList()
-        );
-
-        return Result.success(hubReply);
-    }
-
-    @Transactional
-    public Result<HubEntity> create(String name, String password) {
+    public Result<HubPayload.CreateResponse> create(String name, String password) {
         if (hubRepository.hubExists()) {
             return Result.failed(
                     new HubCentralException.EntityExistsException("There is another hub configured")
@@ -126,8 +99,13 @@ public class HubServices {
         hub.setName(name.trim());
         hub.setSlug(name.trim().replaceAll(" ", "_").toLowerCase());
         hub.setAccessCode(BcryptUtil.bcryptHash(password));
-        var savedHub = hubRepository.save(hub);
-        return Result.success(savedHub);
+        hubRepository.save(hub);
+        return Result.success(
+                new HubPayload.CreateResponse(
+                        hub.getSlug(),
+                        hub.getName()
+                )
+        );
     }
 
 }

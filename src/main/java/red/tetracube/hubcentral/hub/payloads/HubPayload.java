@@ -1,4 +1,4 @@
-package red.tetracube.hubcentral.api.payloads;
+package red.tetracube.hubcentral.hub.payloads;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.smallrye.common.constraint.NotNull;
@@ -17,19 +17,10 @@ public class HubPayload {
 
     }
 
-    public record Reply(
-            String slug,
-            String name,
-            List<RoomPayload> rooms
-    ) {
-
-    }
-
-    public record RoomPayload(
+    public record CreateResponse(
             String slug,
             String name
     ) {
-
     }
 
 }

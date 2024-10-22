@@ -14,9 +14,8 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import red.tetracube.hubcentral.auth.payloads.LoginPayload;
-import red.tetracube.hubcentral.domain.model.HubData;
 import red.tetracube.hubcentral.exceptions.HubCentralException;
-import red.tetracube.hubcentral.services.HubServices;
+import red.tetracube.hubcentral.hub.HubServices;
 
 @Path("/auth")
 public class HubAuthAPI {
@@ -30,7 +29,7 @@ public class HubAuthAPI {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RunOnVirtualThread
-    public HubData login(@Valid @RequestBody LoginPayload.Request loginRequest) {
+    public LoginPayload.Response login(@Valid @RequestBody LoginPayload.Request loginRequest) {
         var result = hubServices.generateTokenForHub(loginRequest.name(), loginRequest.accessCode());
         if (result.isSuccess()) {
             return result.getContent();

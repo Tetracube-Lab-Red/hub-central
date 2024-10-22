@@ -20,4 +20,16 @@ public class LoginPayload {
     ) {
     }
 
+    public record Response(
+            @JsonProperty("slug")
+            String slug,
+
+            @JsonProperty("name")
+            String name,
+
+            @JsonProperty("token")
+            String token
+    ) {
+    }
+
 }

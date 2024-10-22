@@ -1,4 +1,4 @@
-package red.tetracube.hubcentral.services.dto;
+package red.tetracube.hubcentral.domain;
 
 import red.tetracube.hubcentral.exceptions.HubCentralException;
 
