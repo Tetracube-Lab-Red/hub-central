@@ -1,4 +1,4 @@
-package red.tetracube.hubcentral.api.payloads;
+package red.tetracube.hubcentral.auth.payloads;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

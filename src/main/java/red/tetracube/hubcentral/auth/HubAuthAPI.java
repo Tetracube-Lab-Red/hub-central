@@ -1,4 +1,4 @@
-package red.tetracube.hubcentral.api;
+package red.tetracube.hubcentral.auth;
 
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 
@@ -13,7 +13,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
-import red.tetracube.hubcentral.api.payloads.LoginPayload;
+import red.tetracube.hubcentral.auth.payloads.LoginPayload;
 import red.tetracube.hubcentral.domain.model.HubData;
 import red.tetracube.hubcentral.exceptions.HubCentralException;
 import red.tetracube.hubcentral.services.HubServices;
