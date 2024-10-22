@@ -35,4 +35,15 @@ public class RoomEntity {
         return name;
     }
 
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setHub(HubEntity hub) {
+        this.hub = hub;
+    }
 }
