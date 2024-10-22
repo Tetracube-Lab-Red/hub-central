@@ -35,6 +35,10 @@ public class RoomEntity {
         return name;
     }
 
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
     public void setSlug(String slug) {
         this.slug = slug;
     }
