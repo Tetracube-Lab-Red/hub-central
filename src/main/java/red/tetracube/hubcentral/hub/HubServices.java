@@ -18,7 +18,6 @@ import jakarta.transaction.Transactional;
 import red.tetracube.hubcentral.auth.payloads.LoginPayload;
 import red.tetracube.hubcentral.database.entities.HubEntity;
 import red.tetracube.hubcentral.database.repositories.HubRepository;
-import red.tetracube.hubcentral.database.repositories.RoomRepository;
 import red.tetracube.hubcentral.exceptions.HubCentralException;
 import red.tetracube.hubcentral.domain.Result;
 import red.tetracube.hubcentral.hub.payloads.HubPayload;
@@ -28,9 +27,6 @@ public class HubServices {
 
     @Inject
     HubRepository hubRepository;
-
-    @Inject
-    RoomRepository roomRepository;
 
     @ConfigProperty(name = "mp.jwt.verify.audiences")
     Set<String> jwtAudiences;

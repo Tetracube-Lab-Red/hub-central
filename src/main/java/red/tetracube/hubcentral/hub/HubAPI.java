@@ -4,8 +4,6 @@ import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;
 import jakarta.inject.Inject;
@@ -18,8 +16,6 @@ public class HubAPI {
 
     @Inject
     HubServices hubServices;
-
-    private final static Logger LOG = LoggerFactory.getLogger(HubAPI.class);
 
     @Path("/")
     @POST

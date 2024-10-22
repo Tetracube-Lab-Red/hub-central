@@ -36,9 +36,9 @@ public class HubAuthAPI {
         }
         var exception = result.getException();
         switch (exception) {
-            case HubCentralException.EntityNotFoundException entityNotFoundException ->
+            case HubCentralException.EntityNotFoundException ignored ->
                     throw new UnauthorizedException();
-            case HubCentralException.UnauthorizedException unauthorizedException -> throw new UnauthorizedException();
+            case HubCentralException.UnauthorizedException ignored -> throw new UnauthorizedException();
             case null, default -> throw new InternalServerErrorException(exception);
         }
     }
