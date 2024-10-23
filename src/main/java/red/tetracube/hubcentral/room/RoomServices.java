@@ -11,6 +11,7 @@ import red.tetracube.hubcentral.domain.Result;
 import red.tetracube.hubcentral.exceptions.HubCentralException;
 import red.tetracube.hubcentral.room.payloads.RoomPayload;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 @ApplicationScoped
@@ -23,7 +24,7 @@ public class RoomServices {
     HubRepository hubRepository;
 
     @Transactional
-    public Result<RoomPayload.CreateResponse> createRoom(String hubSlug, RoomPayload.CreateRequest request) {
+    public Result<RoomPayload.RoomResponse> createRoom(String hubSlug, RoomPayload.CreateRequest request) {
         HubEntity hub;
         try {
             hub = hubRepository.getHubBySlug(hubSlug)
@@ -45,11 +46,20 @@ public class RoomServices {
             );
         }
         return Result.success(
-                new RoomPayload.CreateResponse(
+                new RoomPayload.RoomResponse(
                         room.getSlug(),
                         room.getName()
                 )
         );
+    }
+
+    @Transactional
+    public Result<RoomPayload.GetRoomsResponse> getRooms(String hubSlug) {
+        var rooms = roomRepository.getAllByHub(hubSlug).stream()
+                .map(room -> new RoomPayload.RoomResponse(room.getSlug(), room.getName()))
+                .toList();
+
+        return Result.success(new RoomPayload.GetRoomsResponse(rooms));
     }
 
 }

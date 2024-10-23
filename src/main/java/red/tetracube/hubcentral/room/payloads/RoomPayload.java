@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+import java.util.List;
+
 public class RoomPayload {
 
     public record CreateRequest(
@@ -14,9 +16,14 @@ public class RoomPayload {
 
     }
 
-    public record CreateResponse(
+    public record RoomResponse(
             String slug,
             String name
+    ) {
+    }
+
+    public record GetRoomsResponse(
+           List<RoomResponse> rooms
     ) {
     }
 

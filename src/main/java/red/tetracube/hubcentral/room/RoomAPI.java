@@ -34,7 +34,7 @@ public class RoomAPI {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RunOnVirtualThread
-    public RoomPayload.CreateResponse createRoom(@Valid @RequestBody RoomPayload.CreateRequest request) {
+    public RoomPayload.RoomResponse createRoom(@Valid @RequestBody RoomPayload.CreateRequest request) {
         var result = roomServices.createRoom(hubSlug, request);
         if (result.isSuccess()) {
             return result.getContent();
@@ -47,6 +47,19 @@ public class RoomAPI {
         }  else {
             throw new InternalServerErrorException(exception);
         }
+    }
+
+    @Path("/")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @RunOnVirtualThread
+    public RoomPayload.GetRoomsResponse getRooms() {
+        var result = roomServices.getRooms(hubSlug);
+        if (result.isSuccess()) {
+            return result.getContent();
+        }
+        var exception = result.getException();
+        throw new InternalServerErrorException(exception);
     }
 
 }
