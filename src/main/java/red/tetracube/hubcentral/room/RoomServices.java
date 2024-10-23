@@ -11,7 +11,6 @@ import red.tetracube.hubcentral.domain.Result;
 import red.tetracube.hubcentral.exceptions.HubCentralException;
 import red.tetracube.hubcentral.room.payloads.RoomPayload;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 @ApplicationScoped
