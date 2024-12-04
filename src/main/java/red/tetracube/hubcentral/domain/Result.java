@@ -1,6 +1,6 @@
 package red.tetracube.hubcentral.domain;
 
-import red.tetracube.hubcentral.exceptions.HubCentralException;
+import red.tetracube.hubcentral.domain.exceptions.HubCentralException;
 
 public class Result<T> {
     

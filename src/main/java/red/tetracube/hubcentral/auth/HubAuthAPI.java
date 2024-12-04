@@ -13,8 +13,9 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
-import red.tetracube.hubcentral.auth.payloads.LoginPayload;
-import red.tetracube.hubcentral.exceptions.HubCentralException;
+import red.tetracube.hubcentral.auth.payloads.LoginRequestPayload;
+import red.tetracube.hubcentral.auth.payloads.LoginResponsePayload;
+import red.tetracube.hubcentral.domain.exceptions.HubCentralException;
 
 @Path("/auth")
 public class HubAuthAPI {
@@ -28,8 +29,8 @@ public class HubAuthAPI {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RunOnVirtualThread
-    public LoginPayload.Response login(@Valid @RequestBody LoginPayload.Request loginRequest) {
-        var result = hubAuthServices.generateTokenForHub(loginRequest.name(), loginRequest.accessCode());
+    public LoginResponsePayload login(@Valid @RequestBody LoginRequestPayload loginRequest) {
+        var result = hubAuthServices.generateTokenForHub(loginRequest);
         if (result.isSuccess()) {
             return result.getContent();
         }
@@ -37,8 +38,10 @@ public class HubAuthAPI {
         switch (exception) {
             case HubCentralException.EntityNotFoundException ignored ->
                     throw new UnauthorizedException();
-            case HubCentralException.UnauthorizedException ignored -> throw new UnauthorizedException();
-            case null, default -> throw new InternalServerErrorException(exception);
+            case HubCentralException.UnauthorizedException ignored ->
+                    throw new UnauthorizedException();
+            case null, default ->
+                    throw new InternalServerErrorException(exception);
         }
     }
 

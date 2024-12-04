@@ -1,4 +1,4 @@
-package red.tetracube.hubcentral.exceptions;
+package red.tetracube.hubcentral.domain.exceptions;
 
 public sealed class HubCentralException extends Exception permits
         HubCentralException.EntityExistsException,

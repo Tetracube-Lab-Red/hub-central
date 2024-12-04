@@ -2,6 +2,7 @@ package red.tetracube.hubcentral.database.entities;
 
 import java.util.UUID;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -12,42 +13,16 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "rooms")
-public class RoomEntity {
+public class RoomEntity extends PanacheEntityBase {
     
     @Id
-    private UUID id;
+    public UUID id;
 
-    @Column(name = "slug", unique = true, nullable = false)
-    private String slug;
-
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "name", unique = true, nullable = false)
+    public String name;
 
     @JoinColumn(name = "hub_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = HubEntity.class)
-    private HubEntity hub;
+    public HubEntity hub;
 
-    public String getSlug() {
-        return slug;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public void setSlug(String slug) {
-        this.slug = slug;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setHub(HubEntity hub) {
-        this.hub = hub;
-    }
 }

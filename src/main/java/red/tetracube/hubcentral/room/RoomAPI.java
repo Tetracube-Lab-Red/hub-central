@@ -8,11 +8,14 @@ import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import org.eclipse.microprofile.jwt.Claim;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
-import red.tetracube.hubcentral.exceptions.HubCentralException;
+import red.tetracube.hubcentral.domain.exceptions.HubCentralException;
+import red.tetracube.hubcentral.room.payloads.CreateRoomRequestPayload;
 import red.tetracube.hubcentral.room.payloads.RoomPayload;
+import red.tetracube.hubcentral.room.payloads.RoomsListPayload;
+
+import java.util.UUID;
 
 @RequestScoped
 @Authenticated
@@ -23,10 +26,6 @@ public class RoomAPI {
     JsonWebToken jwt;
 
     @Inject
-    @Claim(value = "hub_slug")
-    String hubSlug;
-
-    @Inject
     RoomServices roomServices;
 
     @Path("/")
@@ -34,8 +33,8 @@ public class RoomAPI {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RunOnVirtualThread
-    public RoomPayload.RoomResponse createRoom(@Valid @RequestBody RoomPayload.CreateRequest request) {
-        var result = roomServices.createRoom(hubSlug, request);
+    public RoomPayload createRoom(@Valid @RequestBody CreateRoomRequestPayload request) {
+        var result = roomServices.createRoom(getHubId(), request);
         if (result.isSuccess()) {
             return result.getContent();
         }
@@ -53,13 +52,16 @@ public class RoomAPI {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @RunOnVirtualThread
-    public RoomPayload.GetRoomsResponse getRooms() {
-        var result = roomServices.getRooms(hubSlug);
+    public RoomsListPayload getRooms() {
+        var result = roomServices.getRooms(getHubId());
         if (result.isSuccess()) {
             return result.getContent();
         }
-        var exception = result.getException();
-        throw new InternalServerErrorException(exception);
+        throw new InternalServerErrorException(result.getException());
+    }
+
+    private UUID getHubId() {
+        return UUID.fromString(jwt.getClaim("hub_id"));
     }
 
 }

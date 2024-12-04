@@ -8,8 +8,9 @@ import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import io.smallrye.common.annotation.RunOnVirtualThread;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.MediaType;
+import red.tetracube.hubcentral.hub.payloads.CreateHubRequestPayload;
 import red.tetracube.hubcentral.hub.payloads.HubPayload;
-import red.tetracube.hubcentral.exceptions.HubCentralException;
+import red.tetracube.hubcentral.domain.exceptions.HubCentralException;
 
 @Path("/")
 public class HubAPI {
@@ -22,8 +23,8 @@ public class HubAPI {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RunOnVirtualThread
-    public HubPayload.CreateResponse createHub(@Valid @RequestBody HubPayload.CreateRequest request) {
-        var result = hubServices.create(request.name(), request.password());
+    public HubPayload createHub(@Valid @RequestBody CreateHubRequestPayload request) {
+        var result = hubServices.create(request);
         if (result.isSuccess()) {
             return result.getContent();
         }
