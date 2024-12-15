@@ -29,6 +29,7 @@ public class HubServices {
         hub.persist();
         return Result.success(
                 new HubPayload(
+                        hub.id,
                         hub.name
                 )
         );
